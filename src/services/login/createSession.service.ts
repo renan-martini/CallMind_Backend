@@ -9,11 +9,18 @@ import { AppError } from "../../errors/appError";
 export const createSessionService = async ({ email, password }: IUserLogin) => {
   const userRepository = AppDataSource.getRepository(User);
 
-  const user = await userRepository.findOne({
+  let user = await userRepository.findOne({
     where: {
       email: email,
     },
   });
+  if (!user) {
+    user = await userRepository.findOne({
+      where: {
+        userName: email,
+      },
+    });
+  }
 
   if (!user || !user.isActive) {
     throw new AppError(401, "Invalid email or password");
