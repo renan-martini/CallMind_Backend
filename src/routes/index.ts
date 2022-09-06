@@ -1,3 +1,6 @@
 import { Express } from "express";
+import userRoutes from "./user.routes";
 
-export const appRoutes = (app: Express) => {};
+export const appRoutes = (app: Express) => {
+  app.use("/register", userRoutes);
+};
