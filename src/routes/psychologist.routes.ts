@@ -4,6 +4,7 @@ import { validateSchemaMiddleware } from "../middlewares/validateSchema.middlewa
 import { ensureAuth } from "../middlewares/validateToken.middleware";
 import { validateUserType } from "../middlewares/validateUserType.middleware";
 import psychologistSchema from "../schemas/psychologist.schema";
+import { psychologist } from "../utils/utils";
 
 const psyRouter = Router();
 
@@ -11,7 +12,7 @@ psyRouter.post(
   "",
   validateSchemaMiddleware(psychologistSchema),
   ensureAuth,
-  validateUserType,
+  validateUserType(psychologist),
   createPsychologistPerfilController
 );
 
