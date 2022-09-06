@@ -18,6 +18,7 @@ const patientsRoutes = () => {
     validateUserType(patient),
     createPatientController
   );
+
   routes.get(
     "",
     ensureAuth,
