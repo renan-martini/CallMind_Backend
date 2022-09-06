@@ -13,7 +13,7 @@ psyRouter.post(
   "",
   validateSchemaMiddleware(psychologistSchema),
   ensureAuth,
-  validateUserType,
+  validateUserType(psychologist),
   createPsychologistPerfilController
 );
 psyRouter.get(
