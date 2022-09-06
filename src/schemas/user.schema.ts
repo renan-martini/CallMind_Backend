@@ -1,5 +1,5 @@
 import * as yup from "yup";
-import { hashSync } from "bcrypt";
+import { hashSync } from "bcryptjs";
 import { patient, psychologist } from "../utils/utils";
 
 const userSchema = yup.object().shape({
