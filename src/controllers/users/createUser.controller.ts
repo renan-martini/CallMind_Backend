@@ -1,7 +1,7 @@
 import { instanceToPlain } from "class-transformer";
 import { Request, Response } from "express";
 import { IUserRequest } from "../../interfaces/users";
-import createUserService from "../../services/users/createUserService.service";
+import createUserService from "../../services/users/createUser.service";
 
 const createUserController = async (req: Request, res: Response) => {
   const userData: IUserRequest = req.body;
