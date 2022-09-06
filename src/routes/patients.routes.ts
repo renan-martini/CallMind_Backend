@@ -12,8 +12,10 @@ const routes = Router();
 
 const patientsRoutes = () => {
   routes.post(
-    "/",
+    "",
     validateSchemaMiddleware(patientSchema),
+    ensureAuth,
+    validateUserType(patient),
     createPatientController
   );
   routes.get(
