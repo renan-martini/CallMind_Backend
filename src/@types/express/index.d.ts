@@ -7,7 +7,7 @@ declare global {
         id: string;
         type: string;
         userName: string;
-        first_login: boolean;
+        first_Login: boolean;
         isActive: boolean;
       };
     }
