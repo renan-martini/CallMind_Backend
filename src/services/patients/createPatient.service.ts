@@ -24,6 +24,24 @@ const createPatientService = async ({
     throw new AppError(404, "User not found!");
   }
 
+  const patientsAlreadyExist = await patientRepository.find({
+    where: {
+      name,
+      img,
+      age,
+      status,
+      schooling,
+      profession,
+      complaint,
+      medication,
+      disease,
+    },
+  });
+
+  if (patientsAlreadyExist.length > 0) {
+    throw new AppError(400, "This patient already exists");
+  }
+
   const newPatient = patientRepository.create({
     user,
     name,
