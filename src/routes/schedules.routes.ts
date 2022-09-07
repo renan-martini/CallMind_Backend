@@ -1,4 +1,5 @@
 import { Router } from "express";
+
 import listSchedulesController from "../controllers/schedules/listSchedules.controller";
 import { validateUserFirstLogin } from "../middlewares/validateFirstLogin.middleware";
 import { ensureAuth } from "../middlewares/validateToken.middleware";
@@ -8,7 +9,8 @@ import { validateSchemaMiddleware } from "../middlewares/validateSchema.middlewa
 import { validateUserActive } from "../middlewares/validateUserActive.middleware";
 import { validateUserType } from "../middlewares/validateUserType.middleware";
 import schedulesSchema from "../schemas/schedules.schema";
-import { psychologist } from "../utils/utils";
+import { patient, psychologist } from "../utils/utils";
+import editScheduleController from "../controllers/schedules/editSchedules.controller";
 
 const schedulesRouter = Router();
 
@@ -17,6 +19,13 @@ schedulesRouter.get(
   ensureAuth,
   validateUserFirstLogin,
   listSchedulesController
+);
+schedulesRouter.post(
+  "/:id",
+  ensureAuth,
+  validateUserFirstLogin,
+  validateUserType(patient),
+  editScheduleController
 );
 
 schedulesRouter.post(
