@@ -16,7 +16,7 @@ export class Schedule {
   @Column({ default: true })
   available: boolean;
 
-  @Column()
+  @Column({ nullable: true })
   link: string;
 
   @ManyToOne(() => Patient)

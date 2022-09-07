@@ -29,7 +29,7 @@ export class Psychologist {
   @Column()
   available_times: string;
 
-  @Column("text", {array: true})
+  @Column("text", { array: true })
   working_days: string[];
 
   @Column()

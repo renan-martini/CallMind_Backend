@@ -5,6 +5,7 @@ import { IScheduleCreateRequest } from "../interfaces/schedules";
 const schedulesSchema: SchemaOf<IScheduleCreateRequest> = yup.object().shape({
   date: yup.string().required(),
   hour: yup.string().required(),
+  link: yup.string(),
 });
 
 export default schedulesSchema;

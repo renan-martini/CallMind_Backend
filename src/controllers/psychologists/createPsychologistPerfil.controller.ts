@@ -1,3 +1,4 @@
+import { instanceToPlain } from "class-transformer";
 import { Request, Response } from "express";
 import { AppError, handleError } from "../../errors/appError";
 import createPsychologistPerfilService from "../../services/psychologists/createPsychologistPerfil.service";
@@ -29,8 +30,7 @@ const createPsychologistPerfilController = async (
       userId,
     });
 
-    return response.json({userPsy})
-    
+    return response.json(instanceToPlain(userPsy));
   } catch (error) {
     if (error instanceof AppError) {
       handleError(error, response);
