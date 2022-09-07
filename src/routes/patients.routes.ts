@@ -28,7 +28,7 @@ const patientsRoutes = () => {
     listPsychologistsController
   );
   routes.post(
-    '/:id/charts',
+    "/:id/charts",
     validateSchemaMiddleware(chartSchema),
     ensureAuth,
     validateUserType(psychologist),
