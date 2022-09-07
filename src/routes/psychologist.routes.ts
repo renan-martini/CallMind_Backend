@@ -1,5 +1,6 @@
 import { Router } from "express";
 import createPsychologistPerfilController from "../controllers/psychologists/createPsychologistPerfil.controller";
+import listOnePatientsController from "../controllers/psychologists/listOnePatient.controller";
 import listPatientsController from "../controllers/psychologists/listPatients.controller";
 import { validateSchemaMiddleware } from "../middlewares/validateSchema.middleware";
 import { ensureAuth } from "../middlewares/validateToken.middleware";
@@ -21,6 +22,13 @@ psyRouter.get(
   ensureAuth,
   validateUserType(psychologist),
   listPatientsController
+);
+
+psyRouter.get(
+  "/patient/:id",
+  ensureAuth,
+  validateUserType(psychologist),
+  listOnePatientsController
 );
 
 export default psyRouter;
