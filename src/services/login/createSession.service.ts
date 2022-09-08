@@ -33,7 +33,7 @@ export const createSessionService = async ({ email, password }: IUserLogin) => {
   }
 
   const token = jwt.sign(
-    { email: user.email, id: user.id },
+    { email: user.email, id: user.id, type: user.type },
     process.env.SECRET_KEY as string,
     {
       subject: user.id,
