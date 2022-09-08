@@ -5,7 +5,7 @@ import createChartService from "../../services/chart/createChart.service";
 const createChartController = async (request: Request, response: Response) => {
   try {
     const patientId = request.params.id;
-    const psychologistId = request.user.id;
+    const psychologistId = request.psychologist.id;
     const { date, description } = request.body;
 
     const chart = await createChartService(
