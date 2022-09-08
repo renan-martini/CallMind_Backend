@@ -1,17 +1,28 @@
 import AppDataSource from "../../data-source";
+import { Patient } from "../../entities/patient.entity";
+import { AppError } from "../../errors/appError";
 
-import { Schedule } from "../../entities/schedule.entity";
+const listOnePatientService = async (id: string) => {
+  try {
+    const patientRepository = AppDataSource.getRepository(Patient);
+    const patient = await patientRepository.findOneBy({ id });
+    console.log("Encontrado no Service", patient);
 
-const listOnePatientsService = async (id: string, patientId: any) => {
-  const patient = await AppDataSource.getRepository(Schedule)
-    .createQueryBuilder("schedules")
-    .innerJoinAndSelect("schedules.patient", "patient")
-    .innerJoinAndSelect("schedules.psychologist", "psychologist")
-    .select(["patient.*"])
-    .where("psychologist.id = :id", { id })
-    .andWhere("patient.id = :id", { patientId })
-    .getOne();
-  return patient;
+    if (!patient) {
+      throw new AppError(404, "Patient not found!");
+    }
+
+    return patient;
+  } catch (error) {
+    if (error instanceof AppError) {
+      throw new AppError(error.statusCode, error.message);
+    } else {
+      if (error instanceof Error) {
+        throw new AppError(400, error.message);
+      }
+      throw new AppError(400, "Error");
+    }
+  }
 };
 
-export default listOnePatientsService;
+export default listOnePatientService;

@@ -1,14 +1,22 @@
 import { instanceToPlain } from "class-transformer";
 import { Request, Response } from "express";
-import listOnePatientsService from "../../services/psychologists/listOnePatient.service";
+import { AppError, handleError } from "../../errors/appError";
+import listOnePatientService from "../../services/psychologists/listOnePatient.service";
 
-const listOnePatientsController = async (req: Request, res: Response) => {
-  const psychologistId = req.user.id;
-  const patientId = req.params;
+const listOnePatientController = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const find = id;
 
-  const patient = await listOnePatientsService(psychologistId, patientId);
+    const patient = await listOnePatientService(find);
+    console.log("Encontrado no controller", patient);
 
-  return res.json(instanceToPlain(patient));
+    return res.json(instanceToPlain(patient));
+  } catch (err) {
+    if (err instanceof AppError) {
+      handleError(err, res);
+    }
+  }
 };
 
-export default listOnePatientsController;
+export default listOnePatientController;
