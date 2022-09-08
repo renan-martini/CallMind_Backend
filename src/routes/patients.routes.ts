@@ -7,6 +7,7 @@ import listPsychologistsController from "../controllers/patients/listPsychologis
 import { validateUserFirstLogin } from "../middlewares/validateFirstLogin.middleware";
 import { validateSchemaMiddleware } from "../middlewares/validateSchema.middleware";
 import { ensureAuth } from "../middlewares/validateToken.middleware";
+import { validateUserActive } from "../middlewares/validateUserActive.middleware";
 import { validateUserType } from "../middlewares/validateUserType.middleware";
 import { chartSchema } from "../schemas/chart.schema";
 import patientSchema from "../schemas/patient.schema";
@@ -19,7 +20,7 @@ const patientsRoutes = () => {
     "",
     validateSchemaMiddleware(patientSchema),
     ensureAuth,
-    validateUserFirstLogin,
+    validateUserActive,
     validateUserType(patient),
     createPatientController
   );
