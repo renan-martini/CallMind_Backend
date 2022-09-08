@@ -9,15 +9,15 @@ const listPatientsService = async (id: string) => {
     relations: { user: true },
     where: { user: { id: id } },
   });
-  const patients = await AppDataSource.getRepository(Schedule)
-    .createQueryBuilder("schedules")
-    .innerJoinAndSelect("schedules.patient", "patient")
-    .innerJoinAndSelect("schedules.psychologist", "psychologist")
-    .select(["patient.*"])
-    .where("psychologist.id = :id, schedules.available = false", {
-      id: psychologist!.id,
-    })
-    .getMany();
+
+  const patients = await AppDataSource.query(
+    `SELECT patient.* FROM schedules
+  JOIN patient ON patient.id = schedules."patientId"
+  JOIN psychologist ON psychologist.id = schedules."psychologistId"
+  WHERE psychologist.id = $1 AND schedules.available = false
+  GROUP BY patient.id;`,
+    [psychologist!.id]
+  );
   return patients;
 };
 
