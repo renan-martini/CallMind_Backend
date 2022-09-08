@@ -13,6 +13,7 @@ import { validateUserType } from "../middlewares/validateUserType.middleware";
 import schedulesSchema from "../schemas/schedules.schema";
 import { patient, psychologist } from "../utils/utils";
 import createSchedulesController from "../controllers/schedules/createSchedules.controller";
+import listSchedulesOfPsychologistIdAndDateController from "../controllers/schedules/listSchedulesOfPsychologistIdAndDate.controller";
 
 const schedulesRouter = Router();
 
@@ -48,6 +49,15 @@ schedulesRouter.delete(
   validateUserFirstLogin,
   validateUserType(psychologist),
   deleteSchedulesController
+);
+
+schedulesRouter.get(
+  "/psychologist/:psychologist_id/date/:date",
+  ensureAuth,
+  validateUserActive,
+  validateUserFirstLogin,
+  validateUserType(patient),
+  listSchedulesOfPsychologistIdAndDateController
 );
 
 export default schedulesRouter;

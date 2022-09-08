@@ -3,18 +3,18 @@ import { Psychologist } from "../../entities/psychologist.entity";
 import { AppError } from "../../errors/appError";
 
 const listSchedulesOfPsychologistIdAndDateService = async (
-  psychologisId: string,
+  psychologistId: string,
   date: string
 ) => {
-  if (!date) {
-    throw new AppError(400, "Date was not informed");
+  if (!date || !psychologistId) {
+    throw new AppError(400, "Invalid date or psychologist_id");
   }
   const schedules = await AppDataSource.getRepository(Psychologist)
     .createQueryBuilder("psychologist")
     .innerJoinAndSelect("psychologist.schedules", "schedules")
     .select(["schedules.*"])
     .where("psychologist.id = :id , schedules.date = :date", {
-      id: psychologisId,
+      id: psychologistId,
       date: date,
     })
     .getMany();
