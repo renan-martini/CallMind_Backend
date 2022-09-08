@@ -1,8 +1,6 @@
 import AppDataSource from "../../data-source";
 import { Psychologist } from "../../entities/psychologist.entity";
 
-import { Schedule } from "../../entities/schedule.entity";
-
 const listPatientsService = async (id: string) => {
   const psychologistRepository = AppDataSource.getRepository(Psychologist);
   const psychologist = await psychologistRepository.findOne({
