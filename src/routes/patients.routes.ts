@@ -1,5 +1,6 @@
 import { Router } from "express";
 import createChartController from "../controllers/chart/createChart.controller";
+import listChartController from "../controllers/chart/listChart.controller";
 
 import createPatientController from "../controllers/patients/createPatient.controller";
 import listOnePsychologistController from "../controllers/patients/listOnePsychologist.controller";
@@ -38,6 +39,13 @@ const patientsRoutes = () => {
     ensureAuth,
     validateUserType(psychologist),
     createChartController
+  );
+
+  routes.get(
+    "/:id/charts",
+    ensureAuth,
+    validateUserType(psychologist),
+    listChartController
   );
 
   routes.get(
