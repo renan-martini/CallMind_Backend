@@ -14,7 +14,10 @@ const createChartController = async (request: Request, response: Response) => {
       psychologistId
     );
 
-    return response.json(chart);
+    return response.json({
+        message: "Record created successfully"
+    });
+
   } catch (error) {
     if (error instanceof AppError) {
       handleError(error, response);
