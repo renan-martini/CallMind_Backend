@@ -12,6 +12,7 @@ import { validateUserType } from "../middlewares/validateUserType.middleware";
 import { chartSchema } from "../schemas/chart.schema";
 import patientSchema from "../schemas/patient.schema";
 import { patient, psychologist } from "../utils/utils";
+import deleteUserController from "../controllers/users/deleteUser.controller";
 
 const routes = Router();
 

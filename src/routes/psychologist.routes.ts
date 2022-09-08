@@ -2,6 +2,7 @@ import { Router } from "express";
 import createPsychologistPerfilController from "../controllers/psychologists/createPsychologistPerfil.controller";
 import listOnePatientController from "../controllers/psychologists/listOnePatient.controller";
 import listPatientsController from "../controllers/psychologists/listPatients.controller";
+import deleteUserController from "../controllers/users/deleteUser.controller";
 import { validateSchemaMiddleware } from "../middlewares/validateSchema.middleware";
 import { validateUserFirstLogin } from "../middlewares/validateFirstLogin.middleware";
 import { validateUserActive } from "../middlewares/validateUserActive.middleware";
