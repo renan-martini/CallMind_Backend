@@ -12,7 +12,9 @@ const listOnePatientService = async (id: string) => {
       throw new AppError(404, "Patient not found!");
     }
 
-    return patient;
+    const { user, ...rest } = patient;
+
+    return rest;
   } catch (error) {
     if (error instanceof AppError) {
       throw new AppError(error.statusCode, error.message);

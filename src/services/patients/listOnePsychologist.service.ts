@@ -11,7 +11,9 @@ const listOnePsychologistService = async (id: string) => {
       throw new AppError(404, "Psychologist not found!");
     }
 
-    return psychologist;
+    const { user, schedules, ...rest } = psychologist;
+
+    return rest;
   } catch (error) {
     if (error instanceof AppError) {
       throw new AppError(error.statusCode, error.message);

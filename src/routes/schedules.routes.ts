@@ -5,7 +5,6 @@ import editScheduleController from "../controllers/schedules/editSchedules.contr
 import listSchedulesController from "../controllers/schedules/listSchedules.controller";
 import { validateUserFirstLogin } from "../middlewares/validateFirstLogin.middleware";
 import { ensureAuth } from "../middlewares/validateToken.middleware";
-
 import { validateSchedule } from "../middlewares/validateSchedule.middleware";
 import { validateSchemaMiddleware } from "../middlewares/validateSchema.middleware";
 import { validateUserActive } from "../middlewares/validateUserActive.middleware";
@@ -31,6 +30,7 @@ schedulesRouter.post(
 schedulesRouter.get(
   "/",
   ensureAuth,
+  validateUserActive,
   validateUserFirstLogin,
   listSchedulesController
 );
@@ -38,6 +38,7 @@ schedulesRouter.get(
 schedulesRouter.patch(
   "/:id",
   ensureAuth,
+  validateUserActive,
   validateUserFirstLogin,
   validateUserType(patient),
   editScheduleController
@@ -46,6 +47,7 @@ schedulesRouter.patch(
 schedulesRouter.delete(
   "/:id",
   ensureAuth,
+  validateUserActive,
   validateUserFirstLogin,
   validateUserType(psychologist),
   deleteSchedulesController

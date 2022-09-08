@@ -1,7 +1,6 @@
 import { Router } from "express";
 import createChartController from "../controllers/chart/createChart.controller";
 import listChartController from "../controllers/chart/listChart.controller";
-
 import createPatientController from "../controllers/patients/createPatient.controller";
 import listOnePsychologistController from "../controllers/patients/listOnePsychologist.controller";
 import listPsychologistsController from "../controllers/patients/listPsychologists.controller";
@@ -29,6 +28,8 @@ const patientsRoutes = () => {
   routes.get(
     "",
     ensureAuth,
+    validateUserActive,
+    validateUserFirstLogin,
     validateUserType(patient),
     listPsychologistsController
   );
@@ -37,6 +38,8 @@ const patientsRoutes = () => {
     "/:id/charts",
     validateSchemaMiddleware(chartSchema),
     ensureAuth,
+    validateUserActive,
+    validateUserFirstLogin,
     validateUserType(psychologist),
     createChartController
   );
@@ -44,6 +47,8 @@ const patientsRoutes = () => {
   routes.get(
     "/:id/charts",
     ensureAuth,
+    validateUserActive,
+    validateUserFirstLogin,
     validateUserType(psychologist),
     listChartController
   );
@@ -51,6 +56,8 @@ const patientsRoutes = () => {
   routes.get(
     "/psychologist/:id",
     ensureAuth,
+    validateUserActive,
+    validateUserFirstLogin,
     validateUserType(patient),
     listOnePsychologistController
   );

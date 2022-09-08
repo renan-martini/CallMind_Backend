@@ -1,12 +1,10 @@
 import AppDataSource from "../../data-source";
-import { Psychologist } from "../../entities/psychologist.entity";
 
 const listPsychologistsService = async () => {
-
-  const psychologistRepository = AppDataSource.getRepository(Psychologist);
-  const psychologists = await psychologistRepository.find();
+  const psychologists = await AppDataSource.query(
+    `SELECT psychologist.* FROM psychologist`
+  );
   return psychologists;
-  
 };
 
 export default listPsychologistsService;
