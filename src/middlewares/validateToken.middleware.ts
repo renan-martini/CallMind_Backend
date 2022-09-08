@@ -18,8 +18,10 @@ export const ensureAuth = (req: Request, res: Response, next: NextFunction) => {
       const userRepo = AppDataSource.getRepository(User);
       if (typeof userId === "string") {
         const user = await userRepo.findOneBy({ id: userId });
+
         if (user?.type === patient) {
-          req.user = user;
+          req.user = user!;
+
           const patientsRepo = AppDataSource.getRepository(Patient);
           const patient = await patientsRepo.findOne({
             relations: { user: true },
@@ -29,6 +31,7 @@ export const ensureAuth = (req: Request, res: Response, next: NextFunction) => {
             req.patient = patient;
           }
         } else {
+          req.user = user!;
           const psychologistsRepo = AppDataSource.getRepository(Psychologist);
           const psychologist = await psychologistsRepo.findOne({
             relations: { user: true },
