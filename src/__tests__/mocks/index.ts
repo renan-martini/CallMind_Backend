@@ -17,6 +17,18 @@ export const mockedUserPsychoLogin: IUserLogin = {
   password: "Bolinha10*",
 };
 
+export const mockedUserDelete: IUserRequest = {
+  email: "michael@email.com",
+  password: "Bolinha10*",
+  userName: "Jackson",
+  type: psychologist,
+};
+
+export const mockedUserDeleteLogin: IUserLogin = {
+  email: "michael@email.com",
+  password: "Bolinha10*",
+};
+
 export const mockedPsycho: IUserPsychologistRequest = {
   name: "Elvis Presley",
   img: "https://www.estrelando.com.br/nota/2019/08/01/elvis-presley-queria-se-casar-com-namorada-aos-13-anos-de-idade-diz-site-240163",
