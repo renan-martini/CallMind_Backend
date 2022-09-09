@@ -1,3 +1,3 @@
 # CallMind_Backend
 
-Projeto de backend da aplicação CallMind
+Projeto de backend da aplicação CallMind.
