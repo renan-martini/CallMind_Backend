@@ -7,7 +7,7 @@ const listChartService = async (patientId:string) => {
 
     const patient = await patientRepository.findOneBy({id: patientId})
     if(!patient){
-        throw new AppError(400, "Patient not exists")
+        throw new AppError(401, "Patient not exists")
     }
 
     const chart = await patientRepository.findOneBy({id: patientId}).then(resp => resp?.chart)
