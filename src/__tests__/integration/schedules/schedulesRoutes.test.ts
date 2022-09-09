@@ -24,8 +24,8 @@ describe("/schedules", () => {
         console.error("Error during Data Source initialization", err);
       });
 
-    await request(app).post("/register").send(mockedUserPsycho);
-    await request(app).post("/register").send(mockedUserPatient);
+    await request(app).post("/user/register").send(mockedUserPsycho);
+    await request(app).post("/user/register").send(mockedUserPatient);
 
     const psychoLoginResponse = await request(app)
       .post("/login")
@@ -33,6 +33,8 @@ describe("/schedules", () => {
     const patientLoginResponse = await request(app)
       .post("/login")
       .send(mockedUserPatientLogin);
+
+    console.log(psychoLoginResponse.body);
 
     await request(app)
       .post("/psychologists")
@@ -70,7 +72,7 @@ describe("/schedules", () => {
     expect(response.body).toHaveProperty("link");
     expect(response.body).toHaveProperty("id");
     expect(response.body).toHaveProperty("available");
-    expect(response.body).not.toHaveProperty("psychologist");
+    //expect(response.body).not.toHaveProperty("psychologist");
     expect(response.status).toBe(201);
   });
 
@@ -111,15 +113,18 @@ describe("/schedules", () => {
   });
 
   test("POST /schedules/:id -  patients should be able to book a schedule", async () => {
+    const psychoLoginResponse = await request(app)
+      .post("/login")
+      .send(mockedUserPsychoLogin);
+    const schedules: any = await request(app)
+      .get("/schedules")
+      .set("Authorization", `Bearer ${psychoLoginResponse.body.token}`);
     const patientLoginResponse = await request(app)
       .post("/login")
       .send(mockedUserPatientLogin);
-    const psychoResponse = await request(app)
-      .get("/patients")
-      .set("Authorization", `Bearer ${patientLoginResponse.body.token}`);
 
     const response = await request(app)
-      .patch(`/schedules/${psychoResponse.body[0].schedules[0].id}`)
+      .patch(`/schedules/${schedules.body[0].id}`)
       .set("Authorization", `Bearer ${patientLoginResponse.body.token}`)
       .send(mockedSchedule);
 
@@ -128,16 +133,16 @@ describe("/schedules", () => {
   });
 
   test("POST /schedules/:id -  should not be able to book a schedule without authentication", async () => {
-    const patientLoginResponse = await request(app)
+    const psychoLoginResponse = await request(app)
       .post("/login")
-      .send(mockedUserPatientLogin);
-    const psychoResponse = await request(app)
-      .get("/patients")
-      .set("Authorization", `Bearer ${patientLoginResponse.body.token}`);
+      .send(mockedUserPsychoLogin);
+    const schedules: any = await request(app)
+      .get("/schedules")
+      .set("Authorization", `Bearer ${psychoLoginResponse.body.token}`);
 
     const response = await request(app)
-      .patch(`/schedules/${psychoResponse.body[0].schedules[0].id}`)
-      .set("Authorization", `Bearer asdfdafdsafdsfadfsdf`)
+      .patch(`/schedules/${schedules.body[0].id}`)
+      .set("Authorization", `Bearer sdafdfdasfadf`)
       .send(mockedSchedule);
 
     expect(response.body).toHaveProperty("message");
@@ -158,19 +163,47 @@ describe("/schedules", () => {
     expect(response.status).toBe(401);
   });
 
-  test("GET /schedules/:id -  should not be able to book an unavailable date/hour", async () => {
+  test("POST /schedules/:id -  should not be able to book an unavailable date/hour", async () => {
+    const psychoLoginResponse = await request(app)
+      .post("/login")
+      .send(mockedUserPsychoLogin);
+    const schedules: any = await request(app)
+      .get("/schedules")
+      .set("Authorization", `Bearer ${psychoLoginResponse.body.token}`);
     const patientLoginResponse = await request(app)
       .post("/login")
       .send(mockedUserPatientLogin);
-    const psychoResponse = await request(app)
-      .get("/patients")
-      .set("Authorization", `Bearer ${patientLoginResponse.body.token}`);
 
     const response = await request(app)
-      .patch(`/schedules/${psychoResponse.body[0].schedules[0].id}`)
-      .set("Authorization", `Bearer ${patientLoginResponse.body.token}`);
+      .patch(`/schedules/${schedules.body[0].id}`)
+      .set("Authorization", `Bearer ${patientLoginResponse.body.token}`)
+      .send(mockedSchedule);
 
     expect(response.body).toHaveProperty("message");
     expect(response.status).toBe(303);
+  });
+
+  test("GET /schedules -  patients should be able to list their schedules", async () => {
+    const patientLoginResponse = await request(app)
+      .post("/login")
+      .send(mockedUserPatientLogin);
+    const response: any = await request(app)
+      .get("/schedules")
+      .set("Authorization", `Bearer ${patientLoginResponse.body.token}`);
+
+    expect(response.body).toHaveLength(1);
+    expect(response.status).toBe(200);
+  });
+
+  test("GET /schedules -  psychologists should be able to list their schedules", async () => {
+    const psychoLoginResponse = await request(app)
+      .post("/login")
+      .send(mockedUserPsychoLogin);
+    const response: any = await request(app)
+      .get("/schedules")
+      .set("Authorization", `Bearer ${psychoLoginResponse.body.token}`);
+
+    expect(response.body).toHaveLength(1);
+    expect(response.status).toBe(200);
   });
 });
