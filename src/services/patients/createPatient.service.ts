@@ -57,7 +57,7 @@ const createPatientService = async ({
 
   await patientRepository.save(newPatient);
 
-  await userRepository.update(userId, { first_Login: false });
+  await userRepository.update(userId!, { first_Login: false });
 
   return newPatient;
 };
