@@ -24,20 +24,32 @@ describe("/schedules", () => {
         console.error("Error during Data Source initialization", err);
       });
 
-    await request(app).post("/users").send(mockedUser);
-    await request(app).post("/users").send(mockedAdmin);
-    const adminLoginResponse = await request(app)
+    await request(app).post("/register").send(mockedUserPsycho);
+    await request(app).post("/register").send(mockedUserPatient);
+
+    const psychoLoginResponse = await request(app)
       .post("/login")
-      .send(mockedAdminLogin);
-    const categories = await request(app)
-      .post("/categories")
-      .set("Authorization", `Bearer ${adminLoginResponse.body.token}`)
-      .send(mockedCategory);
-    mockedProperty.categoryId = categories.body.id;
+      .send(mockedUserPsychoLogin);
+    const patientLoginResponse = await request(app)
+      .post("/login")
+      .send(mockedUserPatientLogin);
+
     await request(app)
-      .post("/properties")
-      .set("Authorization", `Bearer ${adminLoginResponse.body.token}`)
-      .send(mockedProperty);
+      .post("/psychologists")
+      .set("Authorization", `Bearer ${psychoLoginResponse.body.token}`)
+      .send(mockedPsycho);
+    await request(app)
+      .post("/patients")
+      .set("Authorization", `Bearer ${patientLoginResponse.body.token}`)
+      .send(mockedPatient);
+
+    const patientResponse = await request(app)
+      .get("/psychologists")
+      .set("Authorization", `Bearer ${psychoLoginResponse.body.token}`);
+
+    const psychoResponse = await request(app)
+      .get("/psychologists")
+      .set("Authorization", `Bearer ${patientLoginResponse.body.token}`);
   });
 
   afterAll(async () => {
@@ -45,179 +57,120 @@ describe("/schedules", () => {
   });
 
   test("POST /schedules -  should be able to create a schedule", async () => {
-    const adminLoginResponse = await request(app)
+    const psychoLoginResponse = await request(app)
       .post("/login")
-      .send(mockedAdminLogin);
-    const users = await request(app)
-      .get("/users")
-      .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
-    const properties = await request(app).get("/properties");
-    const userLoginResponse = await request(app)
-      .post("/login")
-      .send(mockedUserLogin);
-    mockedSchedule.propertyId = properties.body[0].id;
-    mockedSchedule.userId = users.body[1].id;
+      .send(mockedUserPsychoLogin);
     const response = await request(app)
       .post("/schedules")
-      .set("Authorization", `Bearer ${userLoginResponse.body.token}`)
+      .set("Authorization", `Bearer ${psychoLoginResponse.body.token}`)
       .send(mockedSchedule);
 
-    expect(response.body).toHaveProperty("message");
+    expect(response.body).toHaveProperty("date");
+    expect(response.body).toHaveProperty("hour");
+    expect(response.body).toHaveProperty("link");
+    expect(response.body).toHaveProperty("id");
+    expect(response.body).toHaveProperty("available");
+    expect(response.body).not.toHaveProperty("psychologist");
     expect(response.status).toBe(201);
   });
 
   test("POST /schedules -  should not be able to create a schedule that already exists", async () => {
-    const adminLoginResponse = await request(app)
+    const psychoLoginResponse = await request(app)
       .post("/login")
-      .send(mockedAdminLogin);
-    const users = await request(app)
-      .get("/users")
-      .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
-    const properties = await request(app).get("/properties");
-    const userLoginResponse = await request(app)
-      .post("/login")
-      .send(mockedUserLogin);
-    mockedSchedule.propertyId = properties.body[0].id;
-    mockedSchedule.userId = users.body[1].id;
+      .send(mockedUserPsychoLogin);
     const response = await request(app)
       .post("/schedules")
-      .set("Authorization", `Bearer ${userLoginResponse.body.token}`)
+      .set("Authorization", `Bearer ${psychoLoginResponse.body.token}`)
       .send(mockedSchedule);
 
     expect(response.body).toHaveProperty("message");
     expect(response.status).toBe(400);
   });
 
-  test("POST /schedules -  should not be able to create a schedule with an invalid date", async () => {
-    const adminLoginResponse = await request(app)
+  test("POST /schedules -  patients should not be able to create schedules", async () => {
+    const patientLoginResponse = await request(app)
       .post("/login")
-      .send(mockedAdminLogin);
-    const users = await request(app)
-      .get("/users")
-      .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
-    const properties = await request(app).get("/properties");
-    const userLoginResponse = await request(app)
-      .post("/login")
-      .send(mockedUserLogin);
-    mockedScheduleInvalidDate.propertyId = properties.body[0].id;
-    mockedScheduleInvalidDate.userId = users.body[1].id;
+      .send(mockedUserPatientLogin);
     const response = await request(app)
       .post("/schedules")
-      .set("Authorization", `Bearer ${userLoginResponse.body.token}`)
-      .send(mockedScheduleInvalidDate);
+      .set("Authorization", `Bearer ${patientLoginResponse.body.token}`)
+      .send(mockedSchedule);
 
     expect(response.body).toHaveProperty("message");
     expect(response.status).toBe(400);
   });
 
-  test("POST /schedules -  should not be able to create a schedule with an invalid hour", async () => {
-    const adminLoginResponse = await request(app)
-      .post("/login")
-      .send(mockedAdminLogin);
-    const users = await request(app)
-      .get("/users")
-      .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
-    const properties = await request(app).get("/properties");
-    const userLoginResponse = await request(app)
-      .post("/login")
-      .send(mockedUserLogin);
-    mockedScheduleInvalidHour.propertyId = properties.body[0].id;
-    mockedScheduleInvalidHour.userId = users.body[1].id;
+  test("POST /schedules -  should not be able to create a schedule with an invalid token", async () => {
     const response = await request(app)
       .post("/schedules")
-      .set("Authorization", `Bearer ${userLoginResponse.body.token}`)
-      .send(mockedScheduleInvalidHour);
+      .set("Authorization", `Bearer sadfdskafdksjfhadksjfkldsjf`)
+      .send(mockedSchedule);
+
+    expect(response.body).toHaveProperty("message");
+    expect(response.status).toBe(401);
+  });
+
+  test("POST /schedules/:id -  patients should be able to book a schedule", async () => {
+    const patientLoginResponse = await request(app)
+      .post("/login")
+      .send(mockedUserPatientLogin);
+    const psychoResponse = await request(app)
+      .get("/patients")
+      .set("Authorization", `Bearer ${patientLoginResponse.body.token}`);
+
+    const response = await request(app)
+      .patch(`/schedules/${psychoResponse.body[0].schedules[0].id}`)
+      .set("Authorization", `Bearer ${patientLoginResponse.body.token}`)
+      .send(mockedSchedule);
+
+    expect(response.body).toHaveProperty("message");
+    expect(response.status).toBe(202);
+  });
+
+  test("POST /schedules/:id -  should not be able to book a schedule without authentication", async () => {
+    const patientLoginResponse = await request(app)
+      .post("/login")
+      .send(mockedUserPatientLogin);
+    const psychoResponse = await request(app)
+      .get("/patients")
+      .set("Authorization", `Bearer ${patientLoginResponse.body.token}`);
+
+    const response = await request(app)
+      .patch(`/schedules/${psychoResponse.body[0].schedules[0].id}`)
+      .set("Authorization", `Bearer asdfdafdsafdsfadfsdf`)
+      .send(mockedSchedule);
+
+    expect(response.body).toHaveProperty("message");
+    expect(response.status).toBe(401);
+  });
+
+  test("POST /schedules/:id -  should not be able to book a schedule with invalid id", async () => {
+    const patientLoginResponse = await request(app)
+      .post("/login")
+      .send(mockedUserPatientLogin);
+
+    const response = await request(app)
+      .patch(`/schedules/asdfdsafdasfd`)
+      .set("Authorization", `Bearer ${patientLoginResponse.body.token}`)
+      .send(mockedSchedule);
 
     expect(response.body).toHaveProperty("message");
     expect(response.status).toBe(400);
   });
 
-  test("POST /schedules -  should not be able to create a schedule with an invalid property id", async () => {
-    const adminLoginResponse = await request(app)
+  test("GET /schedules/:id -  should not be able to book an unavailable date/hour", async () => {
+    const patientLoginResponse = await request(app)
       .post("/login")
-      .send(mockedAdminLogin);
-    const users = await request(app)
-      .get("/users")
-      .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
-    const userLoginResponse = await request(app)
-      .post("/login")
-      .send(mockedUserLogin);
-    mockedScheduleInvalidPropertyId.userId = users.body[1].id;
+      .send(mockedUserPatientLogin);
+    const psychoResponse = await request(app)
+      .get("/patients")
+      .set("Authorization", `Bearer ${patientLoginResponse.body.token}`);
+
     const response = await request(app)
-      .post("/schedules")
-      .set("Authorization", `Bearer ${userLoginResponse.body.token}`)
-      .send(mockedScheduleInvalidPropertyId);
+      .patch(`/schedules/${psychoResponse.body[0].schedules[0].id}`)
+      .set("Authorization", `Bearer ${patientLoginResponse.body.token}`);
 
     expect(response.body).toHaveProperty("message");
-    expect(response.status).toBe(404);
-  });
-
-  test("POST /schedules -  should not be able to create a schedule without authentication", async () => {
-    const adminLoginResponse = await request(app)
-      .post("/login")
-      .send(mockedAdminLogin);
-    const users = await request(app)
-      .get("/users")
-      .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
-    const properties = await request(app).get("/properties");
-    mockedSchedule.propertyId = properties.body[0].id;
-    mockedSchedule.userId = users.body[1].id;
-    const response = await request(app).post("/schedules").send(mockedSchedule);
-
-    expect(response.body).toHaveProperty("message");
-    expect(response.status).toBe(401);
-  });
-
-  test("GET /schedules/properties/:id -  must be able to list the schedules of a property", async () => {
-    const adminLoginResponse = await request(app)
-      .post("/login")
-      .send(mockedAdminLogin);
-    const properties = await request(app).get("/properties");
-    const response = await request(app)
-      .get(`/schedules/properties/${properties.body[0].id}`)
-      .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
-
-    expect(response.body).toHaveProperty("schedules");
-    expect(response.body.schedules[0]).toHaveProperty("id");
-    expect(response.body.schedules[0]).toHaveProperty("date");
-    expect(response.body.schedules[0]).toHaveProperty("hour");
-    expect(response.body.schedules[0]).toHaveProperty("user");
-    expect(response.body.schedules).toHaveLength(1);
-    expect(response.status).toBe(200);
-  });
-
-  test("GET /schedules/properties/:id -  should not be able to list the schedules of a property with invalid id", async () => {
-    const adminLoginResponse = await request(app)
-      .post("/login")
-      .send(mockedAdminLogin);
-    const response = await request(app)
-      .get(`/schedules/properties/b855d86b-d4c9-41cd-ab98-d7fa734c6ce4`)
-      .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
-
-    expect(response.body).toHaveProperty("message");
-    expect(response.status).toBe(404);
-  });
-
-  test("GET /schedules/properties/:id -  should not be able to list the schedules of a property without authentication", async () => {
-    const properties = await request(app).get("/properties");
-    const response = await request(app).get(
-      `/schedules/properties/${properties.body[0].id}`
-    );
-
-    expect(response.body).toHaveProperty("message");
-    expect(response.status).toBe(401);
-  });
-
-  test("GET /schedules/properties/:id -  should not be able to list the schedules of a property that the user is not admin", async () => {
-    const userLoginResponse = await request(app)
-      .post("/login")
-      .send(mockedUserLogin);
-    const properties = await request(app).get("/properties");
-    const response = await request(app)
-      .get(`/schedules/properties/${properties.body[0].id}`)
-      .set("Authorization", `Bearer ${userLoginResponse.body.token}`);
-
-    expect(response.body).toHaveProperty("message");
-    expect(response.status).toBe(403);
+    expect(response.status).toBe(303);
   });
 });
