@@ -30,7 +30,7 @@ const createPsychologistPerfilController = async (
       userId,
     });
 
-    return response.json(instanceToPlain(userPsy));
+    return response.status(201).json(instanceToPlain(userPsy));
   } catch (error) {
     if (error instanceof AppError) {
       handleError(error, response);

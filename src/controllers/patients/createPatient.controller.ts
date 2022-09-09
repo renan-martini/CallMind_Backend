@@ -1,3 +1,4 @@
+import { instanceToPlain } from "class-transformer";
 import { Request, Response } from "express";
 import { AppError, handleError } from "../../errors/appError";
 import createPatientService from "../../services/patients/createPatient.service";
@@ -31,7 +32,7 @@ const createPatientController = async (req: Request, res: Response) => {
       disease,
     });
 
-    return res.status(201).json({ message: "Patiente Created!" });
+    return res.status(201).json(instanceToPlain(newPatient));
   } catch (err) {
     if (err instanceof AppError) {
       handleError(err, res);
