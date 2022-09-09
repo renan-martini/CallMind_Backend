@@ -23,7 +23,7 @@ export const createSessionService = async ({ email, password }: IUserLogin) => {
   }
 
   if (!user || !user.isActive) {
-    throw new AppError(401, "Invalid email or password");
+    throw new AppError(401, "Invalid email or password, or unauthorized user");
   }
 
   const matchPassword = await compare(password, user.password);
