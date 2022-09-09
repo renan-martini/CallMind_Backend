@@ -56,7 +56,7 @@ const createPsychologistPerfilService = async ({
 
   await psychologistRepository.save(psychologist);
 
-  await userRepository.update(userId, { first_Login: false });
+  await userRepository.update(userId!, { first_Login: false });
 
   return psychologist;
 };
