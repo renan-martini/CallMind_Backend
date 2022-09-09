@@ -1,5 +1,5 @@
 export interface IPatientRequest {
-  userId: string;
+  userId?: string;
   name: string;
   img: string;
   age: number;

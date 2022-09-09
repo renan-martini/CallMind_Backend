@@ -2,7 +2,6 @@ export interface IUserRequest {
   email: string;
   password: string;
   userName: string;
-  first_login: string;
   type: string;
 }
 

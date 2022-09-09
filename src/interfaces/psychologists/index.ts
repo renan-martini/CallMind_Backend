@@ -8,7 +8,7 @@ export interface IUserPsychologistRequest {
   available_times: string;
   working_days: string[];
   registration: string;
-  userId: string;
+  userId?: string;
 }
 
 export interface IUserPsychologistResponse {
