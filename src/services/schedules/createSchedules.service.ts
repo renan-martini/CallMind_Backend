@@ -5,17 +5,19 @@ import { Schedule } from "../../entities/schedule.entity";
 const createSchedulesService = async (data: any, userId: string) => {
   const scheduleRepository = AppDataSource.getRepository(Schedule);
   const psychologistRepository = AppDataSource.getRepository(Psychologist);
-  const psychologist = await psychologistRepository.findOne({
+  const psychologists = await psychologistRepository.findOne({
     relations: { user: true },
     where: { user: { id: userId } },
   });
-  const newSchedule = scheduleRepository.create({
+  const newSchedule: any = scheduleRepository.create({
     ...data,
-    psychologist: psychologist,
+    psychologist: psychologists,
   });
   await scheduleRepository.save(newSchedule);
 
-  return newSchedule;
+  const { psychologist, ...rest } = newSchedule;
+
+  return rest;
 };
 
 export default createSchedulesService;

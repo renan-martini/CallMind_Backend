@@ -84,7 +84,7 @@ describe("/schedules", () => {
       .send(mockedSchedule);
 
     expect(response.body).toHaveProperty("message");
-    expect(response.status).toBe(400);
+    expect(response.status).toBe(401);
   });
 
   test("POST /schedules -  patients should not be able to create schedules", async () => {
@@ -97,7 +97,7 @@ describe("/schedules", () => {
       .send(mockedSchedule);
 
     expect(response.body).toHaveProperty("message");
-    expect(response.status).toBe(400);
+    expect(response.status).toBe(401);
   });
 
   test("POST /schedules -  should not be able to create a schedule with an invalid token", async () => {
@@ -155,7 +155,7 @@ describe("/schedules", () => {
       .send(mockedSchedule);
 
     expect(response.body).toHaveProperty("message");
-    expect(response.status).toBe(400);
+    expect(response.status).toBe(401);
   });
 
   test("GET /schedules/:id -  should not be able to book an unavailable date/hour", async () => {
