@@ -34,8 +34,6 @@ describe("/schedules", () => {
       .post("/login")
       .send(mockedUserPatientLogin);
 
-    console.log(psychoLoginResponse.body);
-
     await request(app)
       .post("/psychologists")
       .set("Authorization", `Bearer ${psychoLoginResponse.body.token}`)
@@ -72,7 +70,7 @@ describe("/schedules", () => {
     expect(response.body).toHaveProperty("link");
     expect(response.body).toHaveProperty("id");
     expect(response.body).toHaveProperty("available");
-    //expect(response.body).not.toHaveProperty("psychologist");
+    expect(response.body).not.toHaveProperty("psychologist");
     expect(response.status).toBe(201);
   });
 
@@ -86,7 +84,7 @@ describe("/schedules", () => {
       .send(mockedSchedule);
 
     expect(response.body).toHaveProperty("message");
-    expect(response.status).toBe(401);
+    expect(response.status).toBe(400);
   });
 
   test("POST /schedules -  patients should not be able to create schedules", async () => {
@@ -99,7 +97,7 @@ describe("/schedules", () => {
       .send(mockedSchedule);
 
     expect(response.body).toHaveProperty("message");
-    expect(response.status).toBe(401);
+    expect(response.status).toBe(400);
   });
 
   test("POST /schedules -  should not be able to create a schedule with an invalid token", async () => {
@@ -160,7 +158,7 @@ describe("/schedules", () => {
       .send(mockedSchedule);
 
     expect(response.body).toHaveProperty("message");
-    expect(response.status).toBe(401);
+    expect(response.status).toBe(400);
   });
 
   test("POST /schedules/:id -  should not be able to book an unavailable date/hour", async () => {

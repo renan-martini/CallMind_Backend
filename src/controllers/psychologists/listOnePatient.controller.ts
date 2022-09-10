@@ -9,8 +9,6 @@ const listOnePatientController = async (req: Request, res: Response) => {
     const find = id;
 
     const patient = await listOnePatientService(find);
-    console.log("Encontrado no controller", patient);
-
     return res.json(instanceToPlain(patient));
   } catch (err) {
     if (err instanceof AppError) {

@@ -6,7 +6,6 @@ const listOnePatientService = async (id: string) => {
   try {
     const patientRepository = AppDataSource.getRepository(Patient);
     const patient = await patientRepository.findOneBy({ id });
-    console.log("Encontrado no Service", patient);
 
     if (!patient) {
       throw new AppError(404, "Patient not found!");
