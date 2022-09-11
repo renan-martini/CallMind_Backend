@@ -6,9 +6,8 @@ import listOnePatientService from "../../services/psychologists/listOnePatient.s
 const listOnePatientController = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const find = id;
+    const patient = await listOnePatientService(id);
 
-    const patient = await listOnePatientService(find);
     return res.json(instanceToPlain(patient));
   } catch (err) {
     if (err instanceof AppError) {
