@@ -14,6 +14,10 @@ const listUserService = async (userId: string) => {
       throw new AppError(404, "User not found!");
     }
 
+    if (user.first_Login === true) {
+      return user;
+    }
+
     if (user?.type === patient) {
       const patientsRepository = AppDataSource.getRepository(Patient);
       const patient = await patientsRepository.findOne({
