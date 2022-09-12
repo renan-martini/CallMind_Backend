@@ -41,5 +41,5 @@ export const createSessionService = async ({ email, password }: IUserLogin) => {
     }
   );
 
-  return token;
+  return { token, user };
 };
