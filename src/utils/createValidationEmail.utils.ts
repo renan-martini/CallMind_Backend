@@ -76,7 +76,7 @@ export const createValidationEmail = (
         acesso a todo o ecosistema CallMind.
       </p>
       <a
-        href="https://callmindm3.vercel.app/validate-account/${token}"
+        href="https://callmindm3.vercel.app/validate/${token}"
         target="_blank"
         ><button>Confirmar endereço de email</button></a
       >
