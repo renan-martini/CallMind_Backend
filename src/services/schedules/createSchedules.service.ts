@@ -12,6 +12,7 @@ const createSchedulesService = async (data: any, userId: string) => {
   const newSchedule: any = scheduleRepository.create({
     ...data,
     psychologist: psychologists,
+    link: psychologists!.meeting,
   });
   await scheduleRepository.save(newSchedule);
 

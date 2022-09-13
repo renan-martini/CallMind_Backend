@@ -35,6 +35,9 @@ export class Psychologist {
   @Column()
   registration: string;
 
+  @Column()
+  meeting: string;
+
   @OneToOne(() => User, { eager: true })
   @JoinColumn()
   user: User;
