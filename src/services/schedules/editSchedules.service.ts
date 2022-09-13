@@ -3,8 +3,6 @@ import { Patient } from "../../entities/patient.entity";
 import { Psychologist } from "../../entities/psychologist.entity";
 import { Schedule } from "../../entities/schedule.entity";
 import { AppError } from "../../errors/appError";
-import { sendMeentingEmail } from "../../utils/utils";
-
 
 const editSchedulesService = async (id: string, userId: string) => {
   try {
@@ -28,12 +26,6 @@ const editSchedulesService = async (id: string, userId: string) => {
       patient: patient!,
       available: false,
     });
-    const psychologist = await psychologistRepository.findOne({
-      relations: { schedules: true },
-      where: { schedules: { id: id } },
-    });
-
-    await sendMeentingEmail(patient,psychologist,schedule)
 
     return { message: "Successfully scheduled" };
   } catch (error) {
