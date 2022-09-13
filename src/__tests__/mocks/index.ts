@@ -37,6 +37,7 @@ export const mockedPsycho: IUserPsychologistRequest = {
   available_times: "8:00 - 22:00",
   working_days: ["Wed", "Thu", "Fri"],
   registration: "RK0101",
+  meeting: "https://callmindbr.salareuniao85749678965874",
 };
 
 export const mockedUserPatient: IUserRequest = {
