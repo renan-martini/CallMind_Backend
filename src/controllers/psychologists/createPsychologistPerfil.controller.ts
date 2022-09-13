@@ -17,6 +17,7 @@ const createPsychologistPerfilController = async (
       available_times,
       working_days,
       registration,
+      meeting,
     } = request.body;
 
     const userPsy = await createPsychologistPerfilService({
@@ -28,6 +29,7 @@ const createPsychologistPerfilController = async (
       working_days,
       registration,
       userId,
+      meeting,
     });
 
     return response.status(201).json(instanceToPlain(userPsy));

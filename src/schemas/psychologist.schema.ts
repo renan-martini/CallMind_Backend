@@ -25,6 +25,7 @@ const psychologistSchema = yup.object().shape({
     .string()
     .min(6, "Minimum 6 characters")
     .required("Required field!"),
+  meeting: yup.string().required("Required field!"),
 });
 
 export default psychologistSchema;

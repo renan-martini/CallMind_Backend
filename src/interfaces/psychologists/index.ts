@@ -9,6 +9,7 @@ export interface IUserPsychologistRequest {
   working_days: string[];
   registration: string;
   userId?: string;
+  meeting: string;
 }
 
 export interface IUserPsychologistResponse {
@@ -21,4 +22,5 @@ export interface IUserPsychologistResponse {
   working_days: string[];
   registration: string;
   user: User;
+  meeting: string;
 }

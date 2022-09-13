@@ -16,6 +16,7 @@ const createPsychologistPerfilService = async ({
   working_days,
   registration,
   userId,
+  meeting,
 }: IUserPsychologistRequest): Promise<IUserPsychologistResponse> => {
   const psychologistRepository = AppDataSource.getRepository(Psychologist);
   const userRepository = AppDataSource.getRepository(User);
@@ -51,6 +52,7 @@ const createPsychologistPerfilService = async ({
   psychologist.working_days = working_days;
   psychologist.registration = registration;
   psychologist.user = userPsy!;
+  psychologist.meeting = meeting;
 
   psychologistRepository.create(psychologist);
 
